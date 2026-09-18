@@ -1,166 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Image to Video</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<title>Free Image to Video</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #222;
-    }
+<style>
 
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #222;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
 
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 25px;
-    }
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
 
-    label {
-      display: block;
-      font-weight: bold;
-      margin-top: 18px;
-      margin-bottom: 8px;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 8px;
+}
 
-    input,
-    select,
-    button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+}
 
-    button {
-      margin-top: 20px;
-      cursor: pointer;
-      background: #111;
-      color: white;
-      border: none;
-    }
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
 
-    button:hover {
-      opacity: 0.85;
-    }
+input,
+select,
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
 
-    #status {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: bold;
-    }
+button {
+  margin-top: 20px;
+  background: #111;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
-    #preview {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
-    }
+button:hover {
+  opacity: 0.85;
+}
 
-    #preview img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+#preview {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
 
-    canvas {
-      display: none;
-    }
-  </style>
+#preview img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+#status {
+  margin-top: 18px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#download {
+  display: none;
+  text-decoration: none;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <div class="card">
+<div class="card">
 
-    <h1>🎬 Free Image to Video</h1>
+<h1>🎬 Free Image to Video</h1>
 
-    <div class="subtitle">
-      Turn images into simple Zoom In / Zoom Out videos
-    </div>
+<div class="subtitle">
+Create simple Zoom In / Zoom Out videos
+</div>
 
-    <label>Select Images</label>
+<label>Select Images</label>
 
-    <input
-      type="file"
-      id="imageInput"
-      accept="image/*"
-      multiple
-    >
+<input
+  type="file"
+  id="imageInput"
+  accept="image/*"
+  multiple
+>
 
-    <div id="preview"></div>
+<div id="preview"></div>
 
-    <label>Effect</label>
+<label>Effect</label>
 
-    <select id="effect">
-      <option value="zoomIn">Zoom In</option>
-      <option value="zoomOut">Zoom Out</option>
-    </select>
+<select id="effect">
 
-    <label>Duration per Image (seconds)</label>
+<option value="zoomIn">
+Zoom In
+</option>
 
-    <input
-      type="number"
-      id="duration"
-      value="5"
-      min="2"
-      max="15"
-    >
+<option value="zoomOut">
+Zoom Out
+</option>
 
-    <label>Video Quality</label>
+</select>
 
-    <select id="quality">
-      <option value="720">720p</option>
-      <option value="480">480p - Faster</option>
-    </select>
+<label>Duration per Image</label>
 
-    <button onclick="createVideo()">
-      🚀 Create Video
-    </button>
+<select id="duration">
 
-    <div id="status"></div>
+<option value="3">
+3 seconds
+</option>
 
-    <canvas id="canvas"></canvas>
+<option value="5" selected>
+5 seconds
+</option>
 
-    <a
-      id="download"
-      style="display:none; text-decoration:none;"
-    >
-      <button>
-        ⬇️ Download Video
-      </button>
-    </a>
+<option value="10">
+10 seconds
+</option>
 
-  </div>
+<option value="15">
+15 seconds
+</option>
+
+</select>
+
+<label>Video Quality</label>
+
+<select id="quality">
+
+<option value="480">
+480p - Faster
+</option>
+
+<option value="720">
+720p
+</option>
+
+</select>
+
+<button id="createButton">
+🚀 Create Video
+</button>
+
+<div id="status"></div>
+
+<canvas
+  id="canvas"
+  style="display:none;">
+</canvas>
+
+<a id="download">
+
+<button>
+⬇️ Download Video
+</button>
+
+</a>
+
+</div>
 
 </div>
 
@@ -168,27 +200,43 @@
 <script>
 
 const imageInput =
-  document.getElementById("imageInput");
+document.getElementById("imageInput");
 
 const preview =
-  document.getElementById("preview");
+document.getElementById("preview");
 
-let images = [];
+const createButton =
+document.getElementById("createButton");
+
+const status =
+document.getElementById("status");
+
+const download =
+document.getElementById("download");
+
+const canvas =
+document.getElementById("canvas");
+
+const ctx =
+canvas.getContext("2d");
 
 
-imageInput.addEventListener("change", function() {
+let files = [];
 
-  images = Array.from(this.files);
+
+imageInput.addEventListener("change", () => {
+
+  files = Array.from(imageInput.files);
 
   preview.innerHTML = "";
 
-  images.forEach(file => {
+  files.forEach(file => {
 
     const img =
-      document.createElement("img");
+    document.createElement("img");
 
     img.src =
-      URL.createObjectURL(file);
+    URL.createObjectURL(file);
 
     preview.appendChild(img);
 
@@ -197,7 +245,7 @@ imageInput.addEventListener("change", function() {
 });
 
 
-async function loadImage(file) {
+function loadImage(file) {
 
   return new Promise((resolve, reject) => {
 
@@ -208,7 +256,140 @@ async function loadImage(file) {
     img.onerror = reject;
 
     img.src =
-      URL.createObjectURL(file);
+    URL.createObjectURL(file);
+
+  });
+
+}
+
+
+function drawImageFrame(
+  img,
+  progress,
+  effect,
+  width,
+  height
+) {
+
+  let scale;
+
+  if (effect === "zoomIn") {
+
+    scale =
+    1 + (progress * 0.20);
+
+  } else {
+
+    scale =
+    1.20 - (progress * 0.20);
+
+  }
+
+
+  const imageRatio =
+  img.width / img.height;
+
+  const canvasRatio =
+  width / height;
+
+
+  let drawWidth;
+  let drawHeight;
+
+
+  if (imageRatio > canvasRatio) {
+
+    drawHeight =
+    height * scale;
+
+    drawWidth =
+    drawHeight * imageRatio;
+
+  } else {
+
+    drawWidth =
+    width * scale;
+
+    drawHeight =
+    drawWidth / imageRatio;
+
+  }
+
+
+  const x =
+  (width - drawWidth) / 2;
+
+  const y =
+  (height - drawHeight) / 2;
+
+
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  ctx.drawImage(
+    img,
+    x,
+    y,
+    drawWidth,
+    drawHeight
+  );
+
+}
+
+
+function recordImage(
+  img,
+  duration,
+  effect,
+  width,
+  height
+) {
+
+  return new Promise(resolve => {
+
+    const start =
+    performance.now();
+
+    function render(now) {
+
+      const elapsed =
+      now - start;
+
+      const progress =
+      Math.min(
+        elapsed / (duration * 1000),
+        1
+      );
+
+
+      drawImageFrame(
+        img,
+        progress,
+        effect,
+        width,
+        height
+      );
+
+
+      if (progress < 1) {
+
+        requestAnimationFrame(render);
+
+      } else {
+
+        resolve();
+
+      }
+
+    }
+
+
+    requestAnimationFrame(render);
 
   });
 
@@ -217,7 +398,7 @@ async function loadImage(file) {
 
 async function createVideo() {
 
-  if (images.length === 0) {
+  if (files.length === 0) {
 
     alert("Please select at least one image.");
 
@@ -226,33 +407,32 @@ async function createVideo() {
   }
 
 
-  const status =
-    document.getElementById("status");
+  createButton.disabled = true;
 
-  const canvas =
-    document.getElementById("canvas");
+  download.style.display = "none";
 
-  const ctx =
-    canvas.getContext("2d");
+
+  const duration =
+  Number(
+    document.getElementById("duration").value
+  );
+
+
+  const effect =
+  document.getElementById("effect").value;
 
 
   const quality =
-    document.getElementById("quality").value;
-
-  const duration =
-    Number(
-      document.getElementById("duration").value
-    );
-
-  const effect =
-    document.getElementById("effect").value;
+  Number(
+    document.getElementById("quality").value
+  );
 
 
   let width;
   let height;
 
 
-  if (quality === "720") {
+  if (quality === 720) {
 
     width = 1280;
     height = 720;
@@ -270,16 +450,28 @@ async function createVideo() {
 
 
   const stream =
-    canvas.captureStream(30);
+  canvas.captureStream(30);
+
+
+  let mimeType =
+  "video/webm;codecs=vp9";
+
+
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+
+    mimeType =
+    "video/webm";
+
+  }
 
 
   const recorder =
-    new MediaRecorder(
-      stream,
-      {
-        mimeType: "video/webm"
-      }
-    );
+  new MediaRecorder(
+    stream,
+    {
+      mimeType: mimeType
+    }
+  );
 
 
   const chunks = [];
@@ -296,155 +488,100 @@ async function createVideo() {
   };
 
 
-  recorder.onstop = () => {
+  const recordingFinished =
+  new Promise(resolve => {
 
-    const blob =
-      new Blob(
-        chunks,
-        {
-          type: "video/webm"
-        }
-      );
+    recorder.onstop = resolve;
 
-
-    const url =
-      URL.createObjectURL(blob);
-
-
-    const download =
-      document.getElementById("download");
-
-
-    download.href = url;
-
-    download.download =
-      "image-to-video.webm";
-
-    download.style.display =
-      "block";
-
-
-    status.innerText =
-      "✅ Video ready!";
-
-  };
+  });
 
 
   recorder.start();
 
 
-  const totalFrames =
-    duration * 30;
-
-
-  for (
-    let imageIndex = 0;
-    imageIndex < images.length;
-    imageIndex++
-  ) {
-
-    const img =
-      await loadImage(
-        images[imageIndex]
-      );
-
+  try {
 
     for (
-      let frame = 0;
-      frame < totalFrames;
-      frame++
+      let i = 0;
+      i < files.length;
+      i++
     ) {
 
-      const progress =
-        frame / totalFrames;
+      status.innerText =
+      `Processing image ${i + 1} of ${files.length}...`;
 
 
-      let scale;
+      const img =
+      await loadImage(files[i]);
 
 
-      if (effect === "zoomIn") {
-
-        scale =
-          1 + progress * 0.20;
-
-      } else {
-
-        scale =
-          1.20 - progress * 0.20;
-
-      }
-
-
-      const imageRatio =
-        img.width / img.height;
-
-      const canvasRatio =
-        width / height;
-
-
-      let drawWidth;
-      let drawHeight;
-
-
-      if (imageRatio > canvasRatio) {
-
-        drawHeight =
-          height * scale;
-
-        drawWidth =
-          drawHeight * imageRatio;
-
-      } else {
-
-        drawWidth =
-          width * scale;
-
-        drawHeight =
-          drawWidth / imageRatio;
-
-      }
-
-
-      const x =
-        (width - drawWidth) / 2;
-
-      const y =
-        (height - drawHeight) / 2;
-
-
-      ctx.clearRect(
-        0,
-        0,
+      await recordImage(
+        img,
+        duration,
+        effect,
         width,
         height
-      );
-
-
-      ctx.drawImage(
-        img,
-        x,
-        y,
-        drawWidth,
-        drawHeight
-      );
-
-
-      await new Promise(
-        requestAnimationFrame
       );
 
     }
 
 
     status.innerText =
-      `Creating video... ${imageIndex + 1}/${images.length}`;
+    "Finalizing video...";
+
+
+    recorder.stop();
+
+
+    await recordingFinished;
+
+
+    const blob =
+    new Blob(
+      chunks,
+      {
+        type: "video/webm"
+      }
+    );
+
+
+    const url =
+    URL.createObjectURL(blob);
+
+
+    download.href = url;
+
+    download.download =
+    "image-to-video.webm";
+
+
+    download.style.display =
+    "block";
+
+
+    status.innerText =
+    "✅ Video ready!";
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.innerText =
+    "❌ Something went wrong.";
 
   }
 
 
-  recorder.stop();
+  createButton.disabled = false;
 
 }
+
+
+createButton.addEventListener(
+  "click",
+  createVideo
+);
 
 </script>
 

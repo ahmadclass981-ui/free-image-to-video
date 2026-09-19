@@ -27,7 +27,7 @@ body {
 }
 
 .card {
-    background: white;
+    background: #ffffff;
     padding: 32px;
     border-radius: 18px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.08);
@@ -78,7 +78,7 @@ select {
     padding: 13px;
     border: 1px solid #d1d5db;
     border-radius: 9px;
-    background: white;
+    background: #ffffff;
     font-size: 16px;
 }
 
@@ -124,7 +124,7 @@ select {
     padding: 14px;
     border: none;
     border-radius: 9px;
-    background: #111;
+    background: #111111;
     color: white;
     font-size: 17px;
     font-weight: 700;
@@ -159,22 +159,28 @@ select {
     transition: width 0.2s ease;
 }
 
-#download {
-    display: none;
-    text-decoration: none;
+.download-item {
+    margin-top: 12px;
 }
 
-#download button {
+.download-button {
+    display: block;
     width: 100%;
-    margin-top: 15px;
-    padding: 13px;
-    border: none;
-    border-radius: 9px;
+    padding: 12px;
     background: #d60000;
     color: white;
-    font-size: 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
     font-weight: 700;
-    cursor: pointer;
+}
+
+.download-button:hover {
+    background: #b50000;
+}
+
+#downloads {
+    margin-top: 15px;
 }
 
 .footer {
@@ -214,9 +220,13 @@ Professional Image to Video Tool
 </div>
 
 
+<!-- IMAGE SELECTION -->
+
 <div class="section">
 
-<label>Select Images</label>
+<label>
+Select Images
+</label>
 
 <input
 type="file"
@@ -234,9 +244,36 @@ Images are processed locally in your browser.
 </div>
 
 
+<!-- OUTPUT MODE -->
+
 <div class="section">
 
-<label>Effect</label>
+<label>
+Output Mode
+</label>
+
+<select id="outputMode">
+
+<option value="combined">
+Combined Video — All Images → One Video
+</option>
+
+<option value="separate">
+Separate Videos — One Video Per Image
+</option>
+
+</select>
+
+</div>
+
+
+<!-- EFFECT -->
+
+<div class="section">
+
+<label>
+Effect
+</label>
 
 <select id="effect">
 
@@ -253,9 +290,13 @@ Zoom Out — 130% → 100%
 </div>
 
 
+<!-- DURATION -->
+
 <div class="section">
 
-<label>Duration per Image</label>
+<label>
+Duration per Image
+</label>
 
 <select id="duration">
 
@@ -280,9 +321,13 @@ Zoom Out — 130% → 100%
 </div>
 
 
+<!-- QUALITY -->
+
 <div class="section">
 
-<label>Video Quality</label>
+<label>
+Video Quality
+</label>
 
 <select id="quality">
 
@@ -317,13 +362,7 @@ id="progressContainer"
 </div>
 
 
-<a id="download">
-
-<button>
-⬇️ Download Video
-</button>
-
-</a>
+<div id="downloads"></div>
 
 
 <canvas id="canvas"></canvas>
@@ -352,8 +391,8 @@ document.getElementById("createButton");
 const status =
 document.getElementById("status");
 
-const download =
-document.getElementById("download");
+const downloads =
+document.getElementById("downloads");
 
 const canvas =
 document.getElementById("canvas");
@@ -441,21 +480,32 @@ const img =
 new Image();
 
 
+const objectURL =
+URL.createObjectURL(file);
+
+
 img.onload = () => {
 
-URL.revokeObjectURL(img.src);
+URL.revokeObjectURL(objectURL);
 
 resolve(img);
 
 };
 
 
-img.onerror =
-reject;
+img.onerror = () => {
+
+URL.revokeObjectURL(objectURL);
+
+reject(
+new Error("Image could not be loaded.")
+);
+
+};
 
 
 img.src =
-URL.createObjectURL(file);
+objectURL;
 
 });
 
@@ -611,72 +661,19 @@ requestAnimationFrame(frame);
 
 
 /* ==========================
-   CREATE VIDEO
+   RECORD ONE IMAGE
 ========================== */
 
-async function createVideo() {
+async function recordSingleImage(
+file,
+duration,
+effect,
+width,
+height
+) {
 
-if (files.length === 0) {
-
-alert(
-"Please select at least one image."
-);
-
-return;
-
-}
-
-
-createButton.disabled =
-true;
-
-download.style.display =
-"none";
-
-progressContainer.style.display =
-"block";
-
-progressBar.style.width =
-"0%";
-
-
-const duration =
-Number(
-document.getElementById(
-"duration"
-).value
-);
-
-
-const effect =
-document.getElementById(
-"effect"
-).value;
-
-
-const quality =
-Number(
-document.getElementById(
-"quality"
-).value
-);
-
-
-let width;
-let height;
-
-
-if (quality === 720) {
-
-width = 1280;
-height = 720;
-
-} else {
-
-width = 854;
-height = 480;
-
-}
+const img =
+await loadImage(file);
 
 
 canvas.width =
@@ -748,17 +745,116 @@ resolve;
 recorder.start();
 
 
-try {
+await processImage(
+img,
+duration,
+effect,
+width,
+height
+);
 
-/*
-   IMPORTANT:
-   Images are processed
-   ONE AT A TIME.
 
-   This prevents loading
-   all full-size images
-   into memory together.
-*/
+recorder.stop();
+
+
+await stopped;
+
+
+stream.getTracks().forEach(
+track => track.stop()
+);
+
+
+return new Blob(
+chunks,
+{
+type:
+"video/webm"
+}
+);
+
+}
+
+
+/* ==========================
+   CREATE COMBINED VIDEO
+========================== */
+
+async function createCombinedVideo(
+duration,
+effect,
+width,
+height
+) {
+
+canvas.width =
+width;
+
+canvas.height =
+height;
+
+
+const stream =
+canvas.captureStream(30);
+
+
+let mimeType =
+"video/webm;codecs=vp9";
+
+
+if (
+!MediaRecorder.isTypeSupported(
+mimeType
+)
+) {
+
+mimeType =
+"video/webm";
+
+}
+
+
+const recorder =
+new MediaRecorder(
+stream,
+{
+mimeType:
+mimeType
+}
+);
+
+
+const chunks = [];
+
+
+recorder.ondataavailable =
+event => {
+
+if (
+event.data.size > 0
+) {
+
+chunks.push(
+event.data
+);
+
+}
+
+};
+
+
+const stopped =
+new Promise(
+resolve => {
+
+recorder.onstop =
+resolve;
+
+});
+
+
+recorder.start();
+
 
 for (
 let i = 0;
@@ -767,7 +863,11 @@ i++
 ) {
 
 status.innerText =
-`Processing image ${i + 1} of ${files.length}...`;
+`Processing image ${
+i + 1
+} of ${
+files.length
+}...`;
 
 
 const img =
@@ -785,15 +885,239 @@ height
 );
 
 
-/*
-   Release the current
-   image before loading
-   the next image.
-*/
+const percent =
+Math.round(
+(
+(i + 1) /
+files.length
+) * 100
+);
 
-img.onload = null;
-img.onerror = null;
-img.src = "";
+
+progressBar.style.width =
+percent + "%";
+
+}
+
+
+recorder.stop();
+
+
+await stopped;
+
+
+stream.getTracks().forEach(
+track => track.stop()
+);
+
+
+return new Blob(
+chunks,
+{
+type:
+"video/webm"
+}
+);
+
+}
+
+
+/* ==========================
+   DOWNLOAD BUTTON
+========================== */
+
+function addDownload(
+blob,
+filename
+) {
+
+const url =
+URL.createObjectURL(blob);
+
+
+const item =
+document.createElement("div");
+
+item.className =
+"download-item";
+
+
+const link =
+document.createElement("a");
+
+link.className =
+"download-button";
+
+link.href =
+url;
+
+link.download =
+filename;
+
+link.innerText =
+"⬇️ Download " + filename;
+
+
+item.appendChild(link);
+
+downloads.appendChild(item);
+
+}
+
+
+/* ==========================
+   MAIN CREATE FUNCTION
+========================== */
+
+async function createVideo() {
+
+if (files.length === 0) {
+
+alert(
+"Please select at least one image."
+);
+
+return;
+
+}
+
+
+createButton.disabled =
+true;
+
+downloads.innerHTML = "";
+
+progressContainer.style.display =
+"block";
+
+progressBar.style.width =
+"0%";
+
+
+const outputMode =
+document.getElementById(
+"outputMode"
+).value;
+
+
+const duration =
+Number(
+document.getElementById(
+"duration"
+).value
+);
+
+
+const effect =
+document.getElementById(
+"effect"
+).value;
+
+
+const quality =
+Number(
+document.getElementById(
+"quality"
+).value
+);
+
+
+let width;
+let height;
+
+
+if (quality === 720) {
+
+width = 1280;
+height = 720;
+
+} else {
+
+width = 854;
+height = 480;
+
+}
+
+
+try {
+
+
+/* ==========================
+   COMBINED MODE
+========================== */
+
+if (
+outputMode === "combined"
+) {
+
+status.innerText =
+"Creating combined video...";
+
+
+const blob =
+await createCombinedVideo(
+duration,
+effect,
+width,
+height
+);
+
+
+addDownload(
+blob,
+"AU-Automation-Combined.webm"
+);
+
+
+progressBar.style.width =
+"100%";
+
+
+status.innerText =
+"✅ Combined video ready!";
+
+}
+
+
+/* ==========================
+   SEPARATE MODE
+========================== */
+
+else {
+
+for (
+let i = 0;
+i < files.length;
+i++
+) {
+
+status.innerText =
+`Creating video ${
+i + 1
+} of ${
+files.length
+}...`;
+
+
+const blob =
+await recordSingleImage(
+files[i],
+duration,
+effect,
+width,
+height
+);
+
+
+addDownload(
+blob,
+`AU-Automation-${String(
+i + 1
+).padStart(
+2,
+"0"
+)}.webm`
+);
 
 
 const percent =
@@ -811,56 +1135,10 @@ percent + "%";
 }
 
 
-/*
-   Stop recording only
-   after every image
-   has finished.
-*/
-
 status.innerText =
-"Finalizing video...";
+"✅ All separate videos are ready!";
 
-
-recorder.stop();
-
-
-await stopped;
-
-
-const blob =
-new Blob(
-chunks,
-{
-type:
-"video/webm"
 }
-);
-
-
-const url =
-URL.createObjectURL(
-blob
-);
-
-
-download.href =
-url;
-
-
-download.download =
-"AU-Automation-Image-to-Video.webm";
-
-
-download.style.display =
-"block";
-
-
-progressBar.style.width =
-"100%";
-
-
-status.innerText =
-"✅ Video ready!";
 
 
 } catch (error) {
@@ -878,10 +1156,6 @@ false;
 
 }
 
-
-/* ==========================
-   START
-========================== */
 
 createButton.addEventListener(
 "click",

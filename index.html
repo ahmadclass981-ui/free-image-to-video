@@ -27,7 +27,7 @@ body {
 }
 
 .card {
-    background: #ffffff;
+    background: white;
     padding: 32px;
     border-radius: 18px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.08);
@@ -40,13 +40,11 @@ body {
 
 .logo-icon {
     font-size: 42px;
-    margin-bottom: 5px;
 }
 
 h1 {
     margin: 0;
     font-size: 32px;
-    font-weight: 700;
     color: #111827;
 }
 
@@ -72,7 +70,6 @@ label {
     display: block;
     font-weight: 700;
     margin-bottom: 8px;
-    color: #1f2937;
 }
 
 input[type="file"],
@@ -81,14 +78,8 @@ select {
     padding: 13px;
     border: 1px solid #d1d5db;
     border-radius: 9px;
-    background: #ffffff;
+    background: white;
     font-size: 16px;
-}
-
-input[type="file"]:focus,
-select:focus {
-    outline: none;
-    border-color: #888;
 }
 
 #preview {
@@ -133,15 +124,11 @@ select:focus {
     padding: 14px;
     border: none;
     border-radius: 9px;
-    background: #111111;
+    background: #111;
     color: white;
     font-size: 17px;
     font-weight: 700;
     cursor: pointer;
-}
-
-#createButton:hover {
-    background: #222222;
 }
 
 #createButton:disabled {
@@ -153,7 +140,6 @@ select:focus {
     text-align: center;
     margin-top: 18px;
     font-weight: 700;
-    color: #333;
 }
 
 .progress-container {
@@ -191,10 +177,6 @@ select:focus {
     cursor: pointer;
 }
 
-#download button:hover {
-    background: #b50000;
-}
-
 .footer {
     text-align: center;
     margin-top: 25px;
@@ -206,23 +188,6 @@ canvas {
     display: none;
 }
 
-@media (max-width: 600px) {
-
-    .container {
-        margin: 15px auto;
-        padding: 10px;
-    }
-
-    .card {
-        padding: 22px;
-    }
-
-    h1 {
-        font-size: 26px;
-    }
-
-}
-
 </style>
 </head>
 
@@ -232,159 +197,141 @@ canvas {
 
 <div class="card">
 
-    <div class="header">
+<div class="header">
 
-        <div class="logo-icon">🎬</div>
+<div class="logo-icon">🎬</div>
 
-        <h1>Free Image to Video</h1>
+<h1>Free Image to Video</h1>
 
-        <div class="brand">
-            AU Automation
-        </div>
+<div class="brand">
+AU Automation
+</div>
 
-        <div class="subtitle">
-            Professional Image to Video Tool
-        </div>
+<div class="subtitle">
+Professional Image to Video Tool
+</div>
 
-    </div>
-
-
-    <!-- IMAGE SELECTION -->
-
-    <div class="section">
-
-        <label>
-            Select Images
-        </label>
-
-        <input
-            type="file"
-            id="imageInput"
-            accept="image/*"
-            multiple
-        >
-
-        <div class="info">
-            You can select multiple images at once.
-        </div>
-
-        <div id="preview"></div>
-
-    </div>
+</div>
 
 
-    <!-- EFFECT -->
+<div class="section">
 
-    <div class="section">
+<label>Select Images</label>
 
-        <label>
-            Effect
-        </label>
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+multiple
+>
 
-        <select id="effect">
+<div class="info">
+Images are processed locally in your browser.
+</div>
 
-            <option value="zoomIn">
-                Zoom In — 100% → 135%
-            </option>
+<div id="preview"></div>
 
-            <option value="zoomOut">
-                Zoom Out — 130% → 100%
-            </option>
-
-        </select>
-
-    </div>
+</div>
 
 
-    <!-- DURATION -->
+<div class="section">
 
-    <div class="section">
+<label>Effect</label>
 
-        <label>
-            Duration per Image
-        </label>
+<select id="effect">
 
-        <select id="duration">
+<option value="zoomIn">
+Zoom In — 100% → 135%
+</option>
 
-            <option value="3">
-                3 seconds
-            </option>
+<option value="zoomOut">
+Zoom Out — 130% → 100%
+</option>
 
-            <option value="5" selected>
-                5 seconds
-            </option>
+</select>
 
-            <option value="10">
-                10 seconds
-            </option>
-
-            <option value="15">
-                15 seconds
-            </option>
-
-        </select>
-
-    </div>
+</div>
 
 
-    <!-- QUALITY -->
+<div class="section">
 
-    <div class="section">
+<label>Duration per Image</label>
 
-        <label>
-            Video Quality
-        </label>
+<select id="duration">
 
-        <select id="quality">
+<option value="3">
+3 seconds
+</option>
 
-            <option value="480">
-                480p - Faster
-            </option>
+<option value="5" selected>
+5 seconds
+</option>
 
-            <option value="720">
-                720p
-            </option>
+<option value="10">
+10 seconds
+</option>
 
-        </select>
+<option value="15">
+15 seconds
+</option>
 
-    </div>
+</select>
 
-
-    <!-- CREATE -->
-
-    <button id="createButton">
-        🚀 Create Video
-    </button>
+</div>
 
 
-    <!-- STATUS -->
+<div class="section">
 
-    <div id="status"></div>
+<label>Video Quality</label>
 
-    <div class="progress-container" id="progressContainer">
+<select id="quality">
 
-        <div id="progressBar"></div>
+<option value="480">
+480p - Faster
+</option>
 
-    </div>
+<option value="720">
+720p
+</option>
 
+</select>
 
-    <!-- DOWNLOAD -->
-
-    <a id="download">
-
-        <button>
-            ⬇️ Download Video
-        </button>
-
-    </a>
+</div>
 
 
-    <canvas id="canvas"></canvas>
+<button id="createButton">
+🚀 Create Video
+</button>
 
 
-    <div class="footer">
-        Free Image to Video Tool by AU Automation
-    </div>
+<div id="status"></div>
+
+
+<div
+class="progress-container"
+id="progressContainer"
+>
+
+<div id="progressBar"></div>
+
+</div>
+
+
+<a id="download">
+
+<button>
+⬇️ Download Video
+</button>
+
+</a>
+
+
+<canvas id="canvas"></canvas>
+
+
+<div class="footer">
+Free Image to Video Tool by AU Automation
+</div>
 
 </div>
 
@@ -394,517 +341,551 @@ canvas {
 <script>
 
 const imageInput =
-    document.getElementById("imageInput");
+document.getElementById("imageInput");
 
 const preview =
-    document.getElementById("preview");
+document.getElementById("preview");
 
 const createButton =
-    document.getElementById("createButton");
+document.getElementById("createButton");
 
 const status =
-    document.getElementById("status");
+document.getElementById("status");
 
 const download =
-    document.getElementById("download");
+document.getElementById("download");
 
 const canvas =
-    document.getElementById("canvas");
+document.getElementById("canvas");
 
 const ctx =
-    canvas.getContext("2d");
+canvas.getContext("2d");
 
 const progressContainer =
-    document.getElementById("progressContainer");
+document.getElementById("progressContainer");
 
 const progressBar =
-    document.getElementById("progressBar");
+document.getElementById("progressBar");
 
 
 let files = [];
 
 
-/* =========================
+/* ==========================
    IMAGE SELECTION
-========================= */
+========================== */
 
-imageInput.addEventListener("change", () => {
+imageInput.addEventListener(
+"change",
+function() {
 
-    files = Array.from(imageInput.files);
+files =
+Array.from(imageInput.files);
 
-    preview.innerHTML = "";
+preview.innerHTML = "";
 
-    files.forEach((file, index) => {
 
-        const wrapper =
-            document.createElement("div");
+files.forEach(
+(file, index) => {
 
-        wrapper.className =
-            "preview-item";
+const wrapper =
+document.createElement("div");
 
-        const img =
-            document.createElement("img");
+wrapper.className =
+"preview-item";
 
-        img.src =
-            URL.createObjectURL(file);
 
-        const number =
-            document.createElement("div");
+const img =
+document.createElement("img");
 
-        number.className =
-            "preview-number";
+img.src =
+URL.createObjectURL(file);
 
-        number.innerText =
-            index + 1;
 
-        wrapper.appendChild(img);
-        wrapper.appendChild(number);
+const number =
+document.createElement("div");
 
-        preview.appendChild(wrapper);
+number.className =
+"preview-number";
 
-    });
+number.innerText =
+index + 1;
 
-    status.innerText =
-        files.length +
-        " image(s) selected.";
+
+wrapper.appendChild(img);
+
+wrapper.appendChild(number);
+
+preview.appendChild(wrapper);
 
 });
 
 
-/* =========================
+status.innerText =
+files.length +
+" image(s) selected.";
+
+});
+
+
+/* ==========================
    LOAD IMAGE
-========================= */
+========================== */
 
 function loadImage(file) {
 
-    return new Promise((resolve, reject) => {
+return new Promise(
+(resolve, reject) => {
 
-        const img =
-            new Image();
+const img =
+new Image();
 
-        img.onload = () => {
 
-            resolve(img);
+img.onload = () => {
 
-        };
+URL.revokeObjectURL(img.src);
 
-        img.onerror = reject;
+resolve(img);
 
-        img.src =
-            URL.createObjectURL(file);
+};
 
-    });
+
+img.onerror =
+reject;
+
+
+img.src =
+URL.createObjectURL(file);
+
+});
 
 }
 
 
-/* =========================
+/* ==========================
    DRAW FRAME
-========================= */
+========================== */
 
 function drawFrame(
-    img,
-    progress,
-    effect,
-    width,
-    height
+img,
+progress,
+effect,
+width,
+height
 ) {
 
-    let scale;
+let scale;
 
 
-    /*
-        ZOOM IN
-        100% → 135%
+if (effect === "zoomIn") {
 
-        ZOOM OUT
-        130% → 100%
-    */
+scale =
+1.00 +
+(progress * 0.35);
 
-    if (effect === "zoomIn") {
+} else {
 
-        scale =
-            1.00 +
-            (progress * 0.35);
-
-    } else {
-
-        scale =
-            1.30 -
-            (progress * 0.30);
-
-    }
-
-
-    const imageRatio =
-        img.width / img.height;
-
-    const canvasRatio =
-        width / height;
-
-
-    let drawWidth;
-    let drawHeight;
-
-
-    if (imageRatio > canvasRatio) {
-
-        drawHeight =
-            height * scale;
-
-        drawWidth =
-            drawHeight * imageRatio;
-
-    } else {
-
-        drawWidth =
-            width * scale;
-
-        drawHeight =
-            drawWidth / imageRatio;
-
-    }
-
-
-    const x =
-        (width - drawWidth) / 2;
-
-    const y =
-        (height - drawHeight) / 2;
-
-
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    ctx.drawImage(
-        img,
-        x,
-        y,
-        drawWidth,
-        drawHeight
-    );
+scale =
+1.30 -
+(progress * 0.30);
 
 }
 
 
-/* =========================
-   PROCESS IMAGE
-========================= */
+const imageRatio =
+img.width / img.height;
+
+const canvasRatio =
+width / height;
+
+
+let drawWidth;
+let drawHeight;
+
+
+if (imageRatio > canvasRatio) {
+
+drawHeight =
+height * scale;
+
+drawWidth =
+drawHeight * imageRatio;
+
+} else {
+
+drawWidth =
+width * scale;
+
+drawHeight =
+drawWidth / imageRatio;
+
+}
+
+
+const x =
+(width - drawWidth) / 2;
+
+const y =
+(height - drawHeight) / 2;
+
+
+ctx.clearRect(
+0,
+0,
+width,
+height
+);
+
+
+ctx.drawImage(
+img,
+x,
+y,
+drawWidth,
+drawHeight
+);
+
+}
+
+
+/* ==========================
+   PROCESS ONE IMAGE
+========================== */
 
 function processImage(
-    img,
-    duration,
-    effect,
-    width,
-    height
+img,
+duration,
+effect,
+width,
+height
 ) {
 
-    return new Promise(resolve => {
+return new Promise(
+resolve => {
 
-        const start =
-            performance.now();
-
-
-        function frame(now) {
-
-            const elapsed =
-                now - start;
+const start =
+performance.now();
 
 
-            const progress =
-                Math.min(
-                    elapsed /
-                    (duration * 1000),
-                    1
-                );
+function frame(now) {
+
+const elapsed =
+now - start;
 
 
-            drawFrame(
-                img,
-                progress,
-                effect,
-                width,
-                height
-            );
+const progress =
+Math.min(
+elapsed /
+(duration * 1000),
+1
+);
 
 
-            if (progress < 1) {
-
-                requestAnimationFrame(frame);
-
-            } else {
-
-                resolve();
-
-            }
-
-        }
+drawFrame(
+img,
+progress,
+effect,
+width,
+height
+);
 
 
-        requestAnimationFrame(frame);
+if (progress < 1) {
 
-    });
+requestAnimationFrame(frame);
+
+} else {
+
+resolve();
+
+}
 
 }
 
 
-/* =========================
+requestAnimationFrame(frame);
+
+});
+
+}
+
+
+/* ==========================
    CREATE VIDEO
-========================= */
+========================== */
 
 async function createVideo() {
 
-    if (files.length === 0) {
+if (files.length === 0) {
 
-        alert(
-            "Please select at least one image."
-        );
+alert(
+"Please select at least one image."
+);
 
-        return;
-
-    }
-
-
-    createButton.disabled = true;
-
-    download.style.display =
-        "none";
-
-    progressContainer.style.display =
-        "block";
-
-    progressBar.style.width =
-        "0%";
-
-
-    const duration =
-        Number(
-            document.getElementById(
-                "duration"
-            ).value
-        );
-
-
-    const effect =
-        document.getElementById(
-            "effect"
-        ).value;
-
-
-    const quality =
-        Number(
-            document.getElementById(
-                "quality"
-            ).value
-        );
-
-
-    let width;
-    let height;
-
-
-    if (quality === 720) {
-
-        width = 1280;
-        height = 720;
-
-    } else {
-
-        width = 854;
-        height = 480;
-
-    }
-
-
-    canvas.width =
-        width;
-
-    canvas.height =
-        height;
-
-
-    const stream =
-        canvas.captureStream(30);
-
-
-    let mimeType =
-        "video/webm;codecs=vp9";
-
-
-    if (
-        !MediaRecorder.isTypeSupported(
-            mimeType
-        )
-    ) {
-
-        mimeType =
-            "video/webm";
-
-    }
-
-
-    const recorder =
-        new MediaRecorder(
-            stream,
-            {
-                mimeType:
-                    mimeType
-            }
-        );
-
-
-    const chunks = [];
-
-
-    recorder.ondataavailable =
-        event => {
-
-            if (
-                event.data.size > 0
-            ) {
-
-                chunks.push(
-                    event.data
-                );
-
-            }
-
-        };
-
-
-    const stopped =
-        new Promise(resolve => {
-
-            recorder.onstop =
-                resolve;
-
-        });
-
-
-    recorder.start();
-
-
-    try {
-
-        /*
-            Process images
-            one by one.
-        */
-
-        for (
-            let i = 0;
-            i < files.length;
-            i++
-        ) {
-
-            status.innerText =
-                `Processing image ${
-                    i + 1
-                } of ${
-                    files.length
-                }...`;
-
-
-            const img =
-                await loadImage(
-                    files[i]
-                );
-
-
-            await processImage(
-                img,
-                duration,
-                effect,
-                width,
-                height
-            );
-
-
-            const percent =
-                Math.round(
-                    (
-                        (i + 1) /
-                        files.length
-                    ) * 100
-                );
-
-
-            progressBar.style.width =
-                percent + "%";
-
-        }
-
-
-        status.innerText =
-            "Finalizing video...";
-
-
-        recorder.stop();
-
-
-        await stopped;
-
-
-        const blob =
-            new Blob(
-                chunks,
-                {
-                    type:
-                        "video/webm"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        download.href =
-            url;
-
-
-        download.download =
-            "AU-Automation-Image-to-Video.webm";
-
-
-        download.style.display =
-            "block";
-
-
-        status.innerText =
-            "✅ Video ready!";
-
-
-        progressBar.style.width =
-            "100%";
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        status.innerText =
-            "❌ Something went wrong. Please try again.";
-
-    }
-
-
-    createButton.disabled =
-        false;
+return;
 
 }
 
 
+createButton.disabled =
+true;
+
+download.style.display =
+"none";
+
+progressContainer.style.display =
+"block";
+
+progressBar.style.width =
+"0%";
+
+
+const duration =
+Number(
+document.getElementById(
+"duration"
+).value
+);
+
+
+const effect =
+document.getElementById(
+"effect"
+).value;
+
+
+const quality =
+Number(
+document.getElementById(
+"quality"
+).value
+);
+
+
+let width;
+let height;
+
+
+if (quality === 720) {
+
+width = 1280;
+height = 720;
+
+} else {
+
+width = 854;
+height = 480;
+
+}
+
+
+canvas.width =
+width;
+
+canvas.height =
+height;
+
+
+const stream =
+canvas.captureStream(30);
+
+
+let mimeType =
+"video/webm;codecs=vp9";
+
+
+if (
+!MediaRecorder.isTypeSupported(
+mimeType
+)
+) {
+
+mimeType =
+"video/webm";
+
+}
+
+
+const recorder =
+new MediaRecorder(
+stream,
+{
+mimeType:
+mimeType
+}
+);
+
+
+const chunks = [];
+
+
+recorder.ondataavailable =
+event => {
+
+if (
+event.data.size > 0
+) {
+
+chunks.push(
+event.data
+);
+
+}
+
+};
+
+
+const stopped =
+new Promise(
+resolve => {
+
+recorder.onstop =
+resolve;
+
+});
+
+
+recorder.start();
+
+
+try {
+
+/*
+   IMPORTANT:
+   Images are processed
+   ONE AT A TIME.
+
+   This prevents loading
+   all full-size images
+   into memory together.
+*/
+
+for (
+let i = 0;
+i < files.length;
+i++
+) {
+
+status.innerText =
+`Processing image ${i + 1} of ${files.length}...`;
+
+
+const img =
+await loadImage(
+files[i]
+);
+
+
+await processImage(
+img,
+duration,
+effect,
+width,
+height
+);
+
+
+/*
+   Release the current
+   image before loading
+   the next image.
+*/
+
+img.onload = null;
+img.onerror = null;
+img.src = "";
+
+
+const percent =
+Math.round(
+(
+(i + 1) /
+files.length
+) * 100
+);
+
+
+progressBar.style.width =
+percent + "%";
+
+}
+
+
+/*
+   Stop recording only
+   after every image
+   has finished.
+*/
+
+status.innerText =
+"Finalizing video...";
+
+
+recorder.stop();
+
+
+await stopped;
+
+
+const blob =
+new Blob(
+chunks,
+{
+type:
+"video/webm"
+}
+);
+
+
+const url =
+URL.createObjectURL(
+blob
+);
+
+
+download.href =
+url;
+
+
+download.download =
+"AU-Automation-Image-to-Video.webm";
+
+
+download.style.display =
+"block";
+
+
+progressBar.style.width =
+"100%";
+
+
+status.innerText =
+"✅ Video ready!";
+
+
+} catch (error) {
+
+console.error(error);
+
+status.innerText =
+"❌ Something went wrong. Please try again.";
+
+}
+
+
+createButton.disabled =
+false;
+
+}
+
+
+/* ==========================
+   START
+========================== */
+
 createButton.addEventListener(
-    "click",
-    createVideo
+"click",
+createVideo
 );
 
 </script>

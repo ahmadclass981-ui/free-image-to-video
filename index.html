@@ -33,6 +33,10 @@ body {
     box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 }
 
+/* ==========================
+   HEADER
+========================== */
+
 .header {
     text-align: center;
     margin-bottom: 30px;
@@ -60,6 +64,91 @@ h1 {
     margin-top: 7px;
     color: #6b7280;
     font-size: 15px;
+}
+
+/* ==========================
+   LICENSE AREA
+========================== */
+
+#licenseScreen {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.license-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.license-subtitle {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 22px;
+}
+
+.license-box {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.license-input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background: #ffffff;
+    font-size: 16px;
+    margin-bottom: 13px;
+    outline: none;
+}
+
+.license-input:focus {
+    border-color: #d60000;
+}
+
+#verifyButton {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #111111;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#verifyButton:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+#licenseStatus {
+    text-align: center;
+    margin-top: 14px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.license-note {
+    text-align: center;
+    margin-top: 15px;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+/* ==========================
+   TOOL
+========================== */
+
+#toolScreen {
+    display: none;
 }
 
 .section {
@@ -220,6 +309,60 @@ Professional Image to Video Tool
 </div>
 
 
+<!-- ==========================
+     LICENSE SCREEN
+========================== -->
+
+<div id="licenseScreen">
+
+<div class="license-title">
+🔐 License Verification
+</div>
+
+<div class="license-subtitle">
+Enter your AU Automation license details to access the tool.
+</div>
+
+<div class="license-box">
+
+<input
+type="text"
+id="licenseInput"
+class="license-input"
+placeholder="Enter License Key"
+autocomplete="off"
+>
+
+<input
+type="email"
+id="emailInput"
+class="license-input"
+placeholder="Enter Registered Email"
+autocomplete="email"
+>
+
+<button id="verifyButton">
+🔓 Verify License
+</button>
+
+<div id="licenseStatus"></div>
+
+</div>
+
+<div class="license-note">
+Your license must be active and registered to the entered email.
+</div>
+
+</div>
+
+
+<!-- ==========================
+     IMAGE TO VIDEO TOOL
+========================== -->
+
+<div id="toolScreen">
+
+
 <!-- IMAGE SELECTION -->
 
 <div class="section">
@@ -366,8 +509,195 @@ Free Image to Video Tool by AU Automation
 
 </div>
 
+</div>
+
 
 <script>
+
+/* ==========================================================
+   AU AUTOMATION LICENSE SYSTEM
+========================================================== */
+
+const LICENSE_API =
+"https://script.google.com/macros/s/AKfycbwMBb-0bwskO8ZCvy50DQSN21ucFKRM8w1JoAclmj56JVXWtHSU1lvSysIJ0FQFE5vK3g/exec";
+
+
+const licenseScreen =
+document.getElementById("licenseScreen");
+
+const toolScreen =
+document.getElementById("toolScreen");
+
+const licenseInput =
+document.getElementById("licenseInput");
+
+const emailInput =
+document.getElementById("emailInput");
+
+const verifyButton =
+document.getElementById("verifyButton");
+
+const licenseStatus =
+document.getElementById("licenseStatus");
+
+
+/* ==========================
+   VERIFY LICENSE
+========================== */
+
+async function verifyLicense() {
+
+const license =
+licenseInput.value.trim();
+
+const email =
+emailInput.value.trim();
+
+
+if (!license) {
+
+licenseStatus.innerText =
+"Please enter your license key.";
+
+licenseStatus.style.color =
+"#d60000";
+
+return;
+
+}
+
+
+if (!email) {
+
+licenseStatus.innerText =
+"Please enter your registered email.";
+
+licenseStatus.style.color =
+"#d60000";
+
+return;
+
+}
+
+
+verifyButton.disabled =
+true;
+
+verifyButton.innerText =
+"Checking License...";
+
+licenseStatus.innerText =
+"Connecting to license server...";
+
+licenseStatus.style.color =
+"#6b7280";
+
+
+try {
+
+const url =
+LICENSE_API +
+"?license=" +
+encodeURIComponent(license) +
+"&email=" +
+encodeURIComponent(email);
+
+
+const response =
+await fetch(url, {
+method: "GET",
+cache: "no-store"
+});
+
+
+if (!response.ok) {
+
+throw new Error(
+"License server returned an error."
+);
+
+}
+
+
+const result =
+await response.json();
+
+
+if (result.success === true) {
+
+/*
+   License accepted.
+   Hide login screen and
+   unlock the tool.
+*/
+
+licenseStatus.innerText =
+"✅ License verified successfully.";
+
+licenseStatus.style.color =
+"#16803c";
+
+
+setTimeout(() => {
+
+licenseScreen.style.display =
+"none";
+
+toolScreen.style.display =
+"block";
+
+}, 500);
+
+
+} else {
+
+licenseStatus.innerText =
+"❌ " +
+(result.message ||
+"License is not valid.");
+
+licenseStatus.style.color =
+"#d60000";
+
+verifyButton.disabled =
+false;
+
+verifyButton.innerText =
+"🔓 Verify License";
+
+}
+
+} catch (error) {
+
+console.error(error);
+
+licenseStatus.innerText =
+"❌ Could not connect to the license server.";
+
+licenseStatus.style.color =
+"#d60000";
+
+verifyButton.disabled =
+false;
+
+verifyButton.innerText =
+"🔓 Verify License";
+
+}
+
+}
+
+
+verifyButton.addEventListener(
+"click",
+verifyLicense
+);
+
+
+/* ==========================================================
+   IMAGE TO VIDEO SYSTEM
+========================================================== */
+
 
 const imageInput =
 document.getElementById("imageInput");
@@ -517,7 +847,7 @@ height
 let scale;
 
 
-/* 
+/*
    Zoom In:
    100% → 135%
 
@@ -837,7 +1167,7 @@ await stopped;
 
 
 /*
-   Release camera/canvas stream.
+   Release canvas stream.
 */
 
 stream.getTracks().forEach(

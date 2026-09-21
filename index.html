@@ -33,10 +33,6 @@ body {
     box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 }
 
-/* ==========================
-   HEADER
-========================== */
-
 .header {
     text-align: center;
     margin-bottom: 30px;
@@ -66,8 +62,9 @@ h1 {
     font-size: 15px;
 }
 
+
 /* ==========================
-   LICENSE AREA
+   LICENSE
 ========================== */
 
 #licenseScreen {
@@ -142,6 +139,7 @@ h1 {
     color: #9ca3af;
     font-size: 12px;
 }
+
 
 /* ==========================
    TOOL
@@ -363,8 +361,6 @@ Your license must be active and registered to the entered email.
 <div id="toolScreen">
 
 
-<!-- IMAGE SELECTION -->
-
 <div class="section">
 
 <label>Select Images</label>
@@ -385,8 +381,6 @@ Images are processed locally in your browser.
 </div>
 
 
-<!-- OUTPUT MODE -->
-
 <div class="section">
 
 <label>Output Mode</label>
@@ -406,8 +400,6 @@ Separate Videos — One Video Per Image
 </div>
 
 
-<!-- EFFECT -->
-
 <div class="section">
 
 <label>Effect</label>
@@ -426,8 +418,6 @@ Zoom Out — 130% → 100%
 
 </div>
 
-
-<!-- DURATION -->
 
 <div class="section">
 
@@ -455,8 +445,6 @@ Zoom Out — 130% → 100%
 
 </div>
 
-
-<!-- QUALITY -->
 
 <div class="section">
 
@@ -516,6 +504,7 @@ Free Image to Video Tool by AU Automation
 
 /* ==========================================================
    AU AUTOMATION LICENSE SYSTEM
+   JSONP VERSION
 ========================================================== */
 
 const LICENSE_API =
@@ -542,10 +531,10 @@ document.getElementById("licenseStatus");
 
 
 /* ==========================
-   VERIFY LICENSE
+   JSONP LICENSE VERIFICATION
 ========================== */
 
-async function verifyLicense() {
+function verifyLicense() {
 
 const license =
 licenseInput.value.trim();
@@ -593,43 +582,75 @@ licenseStatus.style.color =
 "#6b7280";
 
 
-try {
+/*
+   Create a unique callback name.
+*/
 
-const url =
-LICENSE_API +
-"?license=" +
-encodeURIComponent(license) +
-"&email=" +
-encodeURIComponent(email);
+const callbackName =
+"auLicenseCallback_" +
+Date.now();
 
-
-const response =
-await fetch(url, {
-method: "GET",
-cache: "no-store"
-});
-
-
-if (!response.ok) {
-
-throw new Error(
-"License server returned an error."
-);
-
-}
-
-
-const result =
-await response.json();
-
-
-if (result.success === true) {
 
 /*
-   License accepted.
-   Hide login screen and
-   unlock the tool.
+   Create script element.
 */
+
+const script =
+document.createElement("script");
+
+
+/*
+   Timeout protection.
+*/
+
+let finished = false;
+
+
+const timeout =
+setTimeout(() => {
+
+if (finished) return;
+
+finished = true;
+
+cleanup();
+
+licenseStatus.innerText =
+"❌ Could not connect to the license server.";
+
+licenseStatus.style.color =
+"#d60000";
+
+verifyButton.disabled =
+false;
+
+verifyButton.innerText =
+"🔓 Verify License";
+
+}, 15000);
+
+
+/*
+   Callback receives the
+   Apps Script JSONP response.
+*/
+
+window[callbackName] =
+function(result) {
+
+if (finished) return;
+
+finished = true;
+
+clearTimeout(timeout);
+
+cleanup();
+
+
+if (
+result &&
+result.success === true
+) {
 
 licenseStatus.innerText =
 "✅ License verified successfully.";
@@ -653,8 +674,14 @@ toolScreen.style.display =
 
 licenseStatus.innerText =
 "❌ " +
-(result.message ||
-"License is not valid.");
+(
+result &&
+result.message
+?
+result.message
+:
+"License is not valid."
+);
 
 licenseStatus.style.color =
 "#d60000";
@@ -667,9 +694,77 @@ verifyButton.innerText =
 
 }
 
-} catch (error) {
+};
 
-console.error(error);
+
+/*
+   Cleanup function.
+*/
+
+function cleanup() {
+
+if (script.parentNode) {
+
+script.parentNode.removeChild(script);
+
+}
+
+try {
+
+delete window[callbackName];
+
+} catch (e) {
+
+window[callbackName] =
+undefined;
+
+}
+
+}
+
+
+/*
+   Build Apps Script URL.
+*/
+
+const url =
+LICENSE_API +
+"?license=" +
+encodeURIComponent(license) +
+"&email=" +
+encodeURIComponent(email) +
+"&callback=" +
+encodeURIComponent(callbackName) +
+"&_=" +
+Date.now();
+
+
+/*
+   JSONP works by loading
+   the response as JavaScript.
+*/
+
+script.src =
+url;
+
+script.async =
+true;
+
+
+/*
+   Browser-level script error.
+*/
+
+script.onerror =
+function() {
+
+if (finished) return;
+
+finished = true;
+
+clearTimeout(timeout);
+
+cleanup();
 
 licenseStatus.innerText =
 "❌ Could not connect to the license server.";
@@ -683,7 +778,10 @@ false;
 verifyButton.innerText =
 "🔓 Verify License";
 
-}
+};
+
+
+document.body.appendChild(script);
 
 }
 
@@ -697,7 +795,6 @@ verifyLicense
 /* ==========================================================
    IMAGE TO VIDEO SYSTEM
 ========================================================== */
-
 
 const imageInput =
 document.getElementById("imageInput");
@@ -846,14 +943,6 @@ height
 
 let scale;
 
-
-/*
-   Zoom In:
-   100% → 135%
-
-   Zoom Out:
-   130% → 100%
-*/
 
 if (effect === "zoomIn") {
 
@@ -1073,16 +1162,6 @@ resolve;
 });
 
 
-/*
-   IMPORTANT TIMING FIX
-
-   Start recorder first.
-   Then animate.
-   Then wait until the
-   exact selected duration
-   has passed before stopping.
-*/
-
 recorder.start();
 
 
@@ -1119,11 +1198,6 @@ targetTime - elapsed
 );
 
 
-/*
-   Keep recorder alive for
-   the full selected duration.
-*/
-
 if (remaining > 0) {
 
 await new Promise(
@@ -1136,11 +1210,6 @@ remaining
 
 }
 
-
-/*
-   Small final frame to ensure
-   the last frame is captured.
-*/
 
 drawFrame(
 img,
@@ -1165,10 +1234,6 @@ recorder.stop();
 
 await stopped;
 
-
-/*
-   Release canvas stream.
-*/
 
 stream.getTracks().forEach(
 track =>
@@ -1451,10 +1516,6 @@ height = 480;
 try {
 
 
-/* ==========================
-   COMBINED
-========================== */
-
 if (
 outputMode === "combined"
 ) {
@@ -1487,10 +1548,6 @@ status.innerText =
 
 }
 
-
-/* ==========================
-   SEPARATE
-========================== */
 
 else {
 
